@@ -1,20 +1,20 @@
 #!/bin/bash
 
-source somedir/.wrapper.conf
+DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+SES=$(cat $DIR/session.tmux)
 
-if $TMUX has-session -t "${srv_name}" 2>/dev/null; then
-	
-	if [ ! -z "${srv_stop_cmd}" ]; then
-		echo "Asking server '${srv_name}' to stop..."
-		$TMUX send-keys -t "${srv_name}" ${srv_stop_cmd}
-		
-		sleep "${srv_stop_time}"
-	fi
+shopt -s expand_aliases
+alias tmux='tmux -S $DIR/tmux.socket'
 
-	if $TMUX has-session -t "${srv_name}" 2>/dev/null; then
-		echo "Killing server '${srv_name}'."
-		$TMUX kill-session -t "${srv_name}"
-	fi
+if [ ! -z ${TMUX+x} ]; then
+        unset TMUX
+fi
+
+if tmux has-session -t "$SES" 2>/dev/null; then
+	echo "Killing session ${SES}."
+#	tmux send-keys -t "$SES" "stop Enter"
+#	sleep 5
+	tmux kill-session -t "$SES"
 else
-	echo "Error: server '${srv_name}' not running."
+	echo "Error: session $SES not running."
 fi

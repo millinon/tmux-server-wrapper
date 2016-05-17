@@ -1,0 +1,7 @@
+*
+!server.sh
+!start.sh
+!view.sh
+!stop.sh
+!session.tmux
+!.gitignore

@@ -1,14 +1,26 @@
 #!/bin/bash
 
-source somedir/.wrapper.conf
+DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+SES=$(cat $DIR/session.tmux)
 
-if $TMUX has-session -t "${srv_name}" 2>/dev/null; then
-	if [ ! -z ${do_unset+x} ]; then unset $TMUX; fi
-	echo "Connecting to '${srv_name}'."
-	echo "Press 'Ctrl+B D' to exit."
-	read -t 10 -p "Press Enter to continue..."
+shopt -s expand_aliases
+alias tmux='tmux -S $DIR/tmux.socket'
 
-	$TMUX a -t "${srv_name}"
+if [ ! -z ${TMUX+x} ]; then
+        unset TMUX
+fi
+
+if tmux has-session -t "$SES" 2>/dev/null; then
+    if [ "$SES" = $(tmux display-message -p '#S') ]; then
+        echo "Session $SES already attached, not nesting"
+        exit 1
+    else
+        echo "Press Ctrl+B, D to disconnect."
+        read -t 10 -p "Press ENTER to continue..."
+        tmux attach -t "$SES"
+    fi
 else
-	echo "Error: server '${srv_name}' not running."
+	echo "Error: server not running."
+	echo "Run start.sh to start the server."
+    exit 1
 fi
