@@ -18,3 +18,4 @@ if tmux has-session -t "$SES" 2>/dev/null; then
 else
 	echo "Error: session $SES not running."
 fi
+i think this one is OK actually but FUCKING FIX IT ANYWAYS PHIL
