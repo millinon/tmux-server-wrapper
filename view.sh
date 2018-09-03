@@ -24,3 +24,4 @@ else
 	echo "Run start.sh to start the server."
     exit 1
 fi
+FUCKING FIX IT PHIL
