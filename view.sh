@@ -11,14 +11,9 @@ if [ ! -z ${TMUX+x} ]; then
 fi
 
 if tmux has-session -t "$SES" 2>/dev/null; then
-    if [ "$SES" = $(tmux display-message -p '#S') ]; then
-        echo "Session $SES already attached, not nesting"
-        exit 1
-    else
         echo "Press Ctrl+B, D to disconnect."
         read -t 10 -p "Press ENTER to continue..."
         tmux attach -t "$SES"
-    fi
 else
 	echo "Error: server not running."
 	echo "Run start.sh to start the server."
